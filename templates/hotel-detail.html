@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+
+{% block start  %}
+<!-- jumbotron and nav -->
+<!-- jumbotron and nav -->
+<section class="colorful jumbotron mb-0" role="banner">
+    <nav class="navbar navbar-expand-lg justify-content-between navbar-dark" role="navigation">
+        <div class="navbar-brand" style="padding: 0 10px;">
+            <a href="/" style="text-decoration: none; color: black;">my Hotel
+            </a>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="col-lg-6 text-right menu-1 collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">home</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+
+                <li class="nav-item">
+<span class="nav-link" style="color: red;"> {% if  request.user.is_authenticated %}
+  Welcome  {{ request.user.username}}
+    {% endif %}</span>
+
+              </li>
+
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+
+                <a class="nav-link" href="/logout/">logout</a>
+            </li>
+
+{% else %}
+<li class="nav-item">
+    <a class="nav-link" href="/login/">login</a>
+</li>
+<li>
+    <a class="nav-link" href="/register/">Register</a>
+
+</li>
+ {% endif %}
+
+
+
+
+
+            </ul>
+        </div>
+    </nav>
+
+
+</section>
+
+<section class="search-container">
+    <div class="container">
+        <div class="row">
+
+
+
+
+            <div class="col-lg-9  px-4">
+
+              <div class="row search-card-result">
+                    <div class="col-md-3" style="margin: 10px 0;">
+
+                        <img class="img-fluid" src="/media/{{hotel_obj.images.first.images}}" alt="Card image cap">
+                    </div>
+                    <div class="col-md-5">
+                        <h5>{{hotel_obj.hotel_name}}</h5>
+
+                        <p>{{hotel_obj.description|truncatechars:150}}</p>
+                        {% comment %}  truncharacter  : limit on text {% endcomment %}
+                        <p>
+
+
+                            {% for amenitie in hotel_obj.amenities.all  %}
+                            <b>{{amenitie}},</b>
+                            {% endfor %}
+
+
+
+                    </div>
+
+                    <div class="col-md-2 border-left text-center more-offers">
+
+                   <div class="text-success">
+                      <p>{{hotel_obj.hotel_count}} Rooms Available</p>
+                      </div>
+                        <div class="text-success">
+                            <p>📌 {{hotel_obj.hotel_place}}</p>
+                            <h5>${{hotel_obj.hotel_price}}</h5>
+                        </div>
+
+                  {% if request.user.is_authenticated %}
+                        <div class="btn btn-success">View deal</div>
+                        {% else %}
+                        <div class="btn btn-success" onclick="window.location.href='/login/'">Login</div>
+
+
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="col-md-3" style="margin: 10px 0;">
+
+               {% for image in hotel_obj.images.all  %}
+
+
+
+                    <img class="img-fluid" src="/media/{{image.images}}" alt="Card image cap">
+                    {% endfor %}
+
+                </div>
+
+                {% if request.user.is_authenticated %}
+
+
+                    <div class="filter-card">
+                        <h5>Book hotel</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% include 'messages.html' %}
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label for="mintopay">Check in</label>
+                                    <p>
+                                        <input type="date" name="checkin" id="checkin" class="form-control">
+                                    </p>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="maxtopay">Check out</label>
+                                    <p>
+                                        <input type="date" name="checkout" id="checkout" class="form-control">
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Limit">
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+
+                    {% else %}
+                    <p>Please Login to Checkout <button class="btn btn-primary" onclick="window.location.href='/login/'">Login</button></p>
+                    {% endif %}
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<div>
+    <p style="text-align: right; padding: 0 20px;">Created by ❤️ Tanmay</p>
+</div>
+
+{% endblock  %}

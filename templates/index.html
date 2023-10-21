@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+
+{% block start  %}
+<!-- jumbotron and nav -->
+<!-- jumbotron and nav -->
+<section class="colorful jumbotron mb-0" role="banner">
+    <nav class="navbar navbar-expand-lg justify-content-between navbar-dark" role="navigation">
+        <div class="navbar-brand" style="padding: 0 10px;">
+            <a href="/" style="text-decoration: none; color: black;">my Hotel
+            </a>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="col-lg-6 text-right menu-1 collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">home</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+
+                <li class="nav-item">
+<span class="nav-link" style="color: red;"> {% if  request.user.is_authenticated %}
+  Welcome  {{ request.user.username}}
+    {% endif %}</span>
+
+              </li>
+
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+
+                <a class="nav-link" href="/logout/">logout</a>
+            </li>
+
+{% else %}
+<li class="nav-item">
+    <a class="nav-link" href="/login/">login</a>
+</li>
+<li>
+    <a class="nav-link" href="/register/">Register</a>
+
+</li>
+ {% endif %}
+
+
+
+
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container hotels-container">
+
+        <div class="row mt-2 justify-content-between">
+            <div class="col-md-8 text-white align-self-center mb-2 p-4">
+                <h1> MY Hotel</h1>
+                <span class="">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum debitis perspiciatis sed iusto
+                    eveniet neque natus quidem velit optio cumque saepe repudiandae vero, sit hic adipisci laudantium libero blanditiis
+                    animi.
+                </span>
+            </div>
+            <div class="col-md-4">
+                <div class=" form-card">
+                    <h3>Find Hotels</h3>
+                    <form action="#" method="get">
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label for="search">Search</label>
+
+                                <input type="text" name="search" id="destination" class="form-control" value="{{request.GET.search}}" default:"">
+
+
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label for="activities">Aminities</label>
+                                <select id="activities" class="form-control" multiple name="amenities">
+                                    <option value="">Choose</option>
+
+                                    {% for aminities in aminities_obj %}
+                                    <option {% if aminities.amenity_name in amenities %} selected {% endif %} value="{{aminities.amenity_name}}">{{aminities.amenity_name}}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="m-4" for="exampleFormControlSelect1">Sort by</label>
+                            <select class="form-control" id="exampleFormControlSelect1" name=sort_by>
+                                <option value="">Sort</option>
+                                <option {% if sort_by == 'ASC' %} selected {% endif %} value="ASC">ASC</option>
+                                <option {% if sort_by == 'DSC' %} selected {% endif %} value="DSC">DSC</option>
+
+                            </select>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-12" style="padding:10px 0;">
+                                <input type="submit" class="btn btn-primary btn-block" value="Find">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="search-container">
+
+
+
+
+
+
+            <div class="col-lg-9  px-4">
+                <div class="row mt-3">
+                    <div class="col-md-6 align-self-center">
+                    </div>
+                    <div class="col-md-6">
+                     {% comment %} <form action="" method="get">
+                        <div class="form-inline">
+                            <label class="m-4" for="exampleFormControlSelect1">Sort by</label>
+                            <select class="form-control" id="exampleFormControlSelect1" name=sort_by>
+                                <option value="">Sort</option>
+                                <option {% if sort_by == 'ASC' %} selected {% endif %} value="ASC">ASC</option>
+                                <option {% if sort_by == 'DSC' %} selected {% endif %} value="DSC">DSC</option>
+
+                            </select>
+                        </div>
+                        <button class="btn btn-success" style="margin: 10px 0;" type="submit">Sort</button>
+                    </form> {% endcomment %}
+
+                    </div>
+                </div>
+
+{% for hotel in hotel_obj  %}
+
+
+
+                <div class="row search-card-result" onclick="window.location.href='/hotel-detail/{{hotel.uid}}'" style="cursor: pointer;">
+                    <div class="col-md-3" style="margin: 10px 0;">
+
+                        <img class="img-fluid" src="/media/{{hotel.images.first.images}}" alt="Card image cap">
+                    </div>
+                    <div class="col-md-5">
+                        <h5>{{hotel.hotel_name}}</h5>
+
+                        <p>{{hotel.description|truncatechars:150}}</p>
+                        {% comment %}  truncharacter  : limit on text {% endcomment %}
+                        <p>
+
+                                {% for amenitie in hotel.amenities.all  %}
+                                <b>{{amenitie}},</b>
+                                {% endfor %}
+
+
+                    </div>
+
+                    <div class="col-md-2 border-left text-center more-offers">
+
+                   <div class="text-success">
+                      <p>{{hotel.hotel_count}} Rooms Available</p>
+                      </div>
+                        <div class="text-success">
+                            <p>📌 {{hotel.hotel_place}}</p>
+                            <h5>${{hotel.hotel_price}}</h5>
+                        </div>
+
+                        <div class="btn btn-success" onclick="window.location.href='/hotel-detail/{{hotel.uid}}'">View deal</div>
+                    </div>
+                </div>
+                {% empty %}
+                No Data Found
+              {% endfor %}
+
+            </div>
+
+
+
+</section>
+
+<section class="py-4">
+
+
+
+
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item">
+            {% if hotel_obj.has_previous %}
+            <a href="/?page={{hotel_obj.previous_page_number}}" class="page-link">previous</a>
+            {% endif %}
+        </li>
+
+          {% for page_no in totalpage_no  %}
+      <li class="page-item">
+
+        <a href="/?page={{page_no}}"  class="page-link" >{{page_no}}</a>
+
+    </li>
+    {% endfor %}
+
+    {% if hotel_obj.has_next  %}
+    <li class="page-item">
+
+        <a class="page-link" href="/?page={{hotel_obj.next_page_number}}">Next</a>
+        <li class="page-item">
+
+        <a class="page-link" href="/?page={{lastpage}}">Last</a>
+    </li>
+
+
+</li>
+{% endif %}
+    </ul>
+  </nav>
+
+
+
+</section>
+<div>
+    <p style="text-align: right; padding: 0 20px;">Created by ❤️ Tanmay</p>
+</div>
+
+{% endblock  %}
